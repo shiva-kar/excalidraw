@@ -117,6 +117,36 @@ export type ExcalidrawEmbeddableElement = _ExcalidrawElementBase &
     type: "embeddable";
   }>;
 
+export type CodeBlockLanguage =
+  | "javascript"
+  | "typescript"
+  | "python"
+  | "cpp"
+  | "java"
+  | "go"
+  | "rust"
+  | "plaintext"
+  | "swift"
+  | "ruby"
+  | "sql"
+  | "html"
+  | "css"
+  | "json"
+  | "graphql"
+  | "kotlin"
+  | "mermaid"
+  | "yaml";
+
+export type ExcalidrawCodeBlockElement = _ExcalidrawElementBase & {
+  type: "codeblock";
+  code: string;
+  language: CodeBlockLanguage;
+  fontSize: number;
+  showLineNumbers: boolean;
+  title?: string;
+  widthOverridden?: boolean;
+};
+
 export type MagicGenerationData =
   | {
       status: "pending";
@@ -213,6 +243,7 @@ export type ExcalidrawRectanguloidElement =
   | ExcalidrawIframeLikeElement
   | ExcalidrawFrameLikeElement
   | ExcalidrawEmbeddableElement
+  | ExcalidrawCodeBlockElement
   | ExcalidrawSelectionElement;
 
 /**
@@ -231,7 +262,8 @@ export type ExcalidrawElement =
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement
   | ExcalidrawIframeElement
-  | ExcalidrawEmbeddableElement;
+  | ExcalidrawEmbeddableElement
+  | ExcalidrawCodeBlockElement;
 
 export type ExcalidrawNonSelectionElement = Exclude<
   ExcalidrawElement,
@@ -299,6 +331,7 @@ export type ExcalidrawBindableElement =
   | ExcalidrawImageElement
   | ExcalidrawIframeElement
   | ExcalidrawEmbeddableElement
+  | ExcalidrawCodeBlockElement
   | ExcalidrawFrameElement
   | ExcalidrawMagicFrameElement;
 

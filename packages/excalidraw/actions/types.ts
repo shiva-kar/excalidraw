@@ -76,6 +76,8 @@ export type ActionName =
   | "changeArrowProperties"
   | "changeOpacity"
   | "changeFontSize"
+  | "changeCodeBlockLanguage"
+  | "changeCodeBlockLineNumbers"
   | "undo"
   | "redo"
   | "finalize"

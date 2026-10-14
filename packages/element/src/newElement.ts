@@ -13,6 +13,7 @@ import {
   getFontString,
   getUpdatedTimestamp,
   getLineHeight,
+  ROUNDNESS,
 } from "@excalidraw/common";
 
 import type { Radians } from "@excalidraw/math";
@@ -33,6 +34,16 @@ import { normalizeText, measureText } from "./textMeasurements";
 import { wrapText } from "./textWrapping";
 
 import { isLineElement } from "./typeChecks";
+
+import {
+  CODE_BLOCK_THEME,
+  DEFAULT_CODE_BLOCK_FONT_SIZE,
+  DEFAULT_CODE_BLOCK_LANGUAGE,
+  DEFAULT_CODE_BLOCK_WIDTH,
+  DEFAULT_CODE_BLOCK_HEIGHT,
+  MIN_CODE_BLOCK_WIDTH,
+  CODE_BLOCK_HEADER_LABEL,
+} from "./codeBlock";
 
 import type {
   ExcalidrawElement,
@@ -56,6 +67,8 @@ import type {
   ExcalidrawElbowArrowElement,
   ExcalidrawLineElement,
   ExcalidrawStickyNoteElement,
+  ExcalidrawCodeBlockElement,
+  CodeBlockLanguage,
 } from "./types";
 
 export type ElementConstructorOpts = MarkOptional<
@@ -248,6 +261,56 @@ export const newEmbeddableElement = (
   } & ElementConstructorOpts,
 ): NonDeleted<ExcalidrawEmbeddableElement> => {
   return _newElementBase<ExcalidrawEmbeddableElement>("embeddable", opts);
+};
+
+export const newCodeBlockElement = (
+  opts: {
+    type?: "codeblock";
+    code?: string;
+    language?: CodeBlockLanguage;
+    fontSize?: number;
+    showLineNumbers?: boolean;
+    title?: string;
+    widthOverridden?: boolean;
+  } & ElementConstructorOpts,
+): NonDeleted<ExcalidrawCodeBlockElement> => {
+  const width = Math.max(
+    opts.width ?? DEFAULT_CODE_BLOCK_WIDTH,
+    MIN_CODE_BLOCK_WIDTH,
+  );
+  const height = Math.max(
+    opts.height ?? DEFAULT_CODE_BLOCK_HEIGHT,
+    DEFAULT_CODE_BLOCK_HEIGHT,
+  );
+
+  const codeBlockElement = newElementWith(
+    {
+      ..._newElementBase<ExcalidrawCodeBlockElement>("codeblock", {
+        ...opts,
+        width,
+        height,
+        backgroundColor: CODE_BLOCK_THEME.background,
+        strokeColor:
+          opts.strokeColor && opts.strokeColor !== "transparent"
+            ? opts.strokeColor
+            : CODE_BLOCK_THEME.border,
+        roundness: opts.roundness ?? {
+          type: ROUNDNESS.ADAPTIVE_RADIUS,
+          value: 8,
+        },
+      }),
+      type: "codeblock",
+      code: opts.code ?? "",
+      language: opts.language ?? DEFAULT_CODE_BLOCK_LANGUAGE,
+      fontSize: opts.fontSize ?? DEFAULT_CODE_BLOCK_FONT_SIZE,
+      showLineNumbers: opts.showLineNumbers ?? true,
+      title: opts.title ?? CODE_BLOCK_HEADER_LABEL,
+      widthOverridden: opts.widthOverridden ?? false,
+    },
+    {},
+  );
+
+  return codeBlockElement;
 };
 
 export const newIframeElement = (
