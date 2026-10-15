@@ -73,10 +73,10 @@ import { getContainingFrame } from "./frame";
 import { getCornerRadius } from "./utils";
 import {
   getCodeBlockLayout,
-  CODE_BLOCK_THEME,
   CODE_BLOCK_HEADER_LABEL,
   CODE_BLOCK_PLACEHOLDER,
   getCodeBlockFontString,
+  getCodeBlockTheme,
 } from "./codeBlock";
 
 import { ShapeCache } from "./shape";
@@ -467,6 +467,8 @@ const drawCodeBlockElementOnCanvas = (
     (context as any).fontVariantLigatures = "none";
   }
 
+  const theme = getCodeBlockTheme(element.theme);
+
   const radius = element.roundness
     ? getCornerRadius(Math.min(element.width, element.height), element)
     : 0;
@@ -476,7 +478,10 @@ const drawCodeBlockElementOnCanvas = (
   } else {
     context.rect(0, 0, element.width, element.height);
   }
-  context.fillStyle = CODE_BLOCK_THEME.background;
+  context.fillStyle =
+    element.backgroundColor && element.backgroundColor !== "transparent"
+      ? element.backgroundColor
+      : theme.background;
   context.fill();
 
   context.save();
@@ -493,11 +498,11 @@ const drawCodeBlockElementOnCanvas = (
     (element.showLineNumbers ? layout.gutterWidth : 0) + layout.padding;
 
   if (element.showLineNumbers && layout.gutterWidth > 0) {
-    context.fillStyle = CODE_BLOCK_THEME.gutterBackground;
+    context.fillStyle = theme.gutterBackground;
     context.fillRect(0, 0, layout.gutterWidth, element.height);
 
     context.font = getCodeBlockFontString(element.fontSize);
-    context.fillStyle = CODE_BLOCK_THEME.gutterText;
+    context.fillStyle = theme.gutterText;
     context.textAlign = "right";
     context.textBaseline = "middle";
 
@@ -531,7 +536,7 @@ const drawCodeBlockElementOnCanvas = (
     layout.visualLines.length <= 1 &&
     (!layout.visualLines[0] || !layout.visualLines[0].text)
   ) {
-    context.fillStyle = CODE_BLOCK_THEME.placeholder;
+    context.fillStyle = theme.placeholder;
     context.fillText(
       CODE_BLOCK_PLACEHOLDER,
       startX,
@@ -547,9 +552,7 @@ const drawCodeBlockElementOnCanvas = (
 
       let curX = startX;
       for (const token of vLine.tokens) {
-        const color =
-          CODE_BLOCK_THEME.tokenColors[token.type] ||
-          CODE_BLOCK_THEME.tokenColors.plain;
+        const color = theme.tokenColors[token.type] || theme.tokenColors.plain;
         context.fillStyle = color;
         const isItalic = token.type === "comment" || token.type === "instance";
         context.font = isItalic
@@ -573,7 +576,7 @@ const drawCodeBlockElementOnCanvas = (
   context.strokeStyle =
     element.strokeColor && element.strokeColor !== "transparent"
       ? element.strokeColor
-      : CODE_BLOCK_THEME.border;
+      : theme.border;
   if (element.strokeStyle === "dashed") {
     context.setLineDash([8, 8]);
   } else if (element.strokeStyle === "dotted") {

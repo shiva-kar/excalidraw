@@ -137,10 +137,20 @@ export type CodeBlockLanguage =
   | "mermaid"
   | "yaml";
 
+export type CodeBlockThemeName =
+  | "catppuccin"
+  | "githubDark"
+  | "githubLight"
+  | "dracula"
+  | "nord"
+  | "solarizedLight"
+  | "monokai";
+
 export type ExcalidrawCodeBlockElement = _ExcalidrawElementBase & {
   type: "codeblock";
   code: string;
   language: CodeBlockLanguage;
+  theme?: CodeBlockThemeName;
   fontSize: number;
   showLineNumbers: boolean;
   title?: string;

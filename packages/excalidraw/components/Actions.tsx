@@ -178,6 +178,7 @@ export const SelectedShapeActions = ({
       {predicates.codeblock && (
         <>
           {renderAction("changeCodeBlockLanguage")}
+          {renderAction("changeCodeBlockTheme")}
           {renderAction("changeFontSize")}
           {renderAction("changeCodeBlockLineNumbers")}
         </>
@@ -306,6 +307,7 @@ const CombinedShapeProperties = ({
               {predicates.codeblock && (
                 <>
                   {renderAction("changeCodeBlockLanguage")}
+                  {renderAction("changeCodeBlockTheme")}
                   {renderAction("changeFontSize")}
                   {renderAction("changeCodeBlockLineNumbers")}
                 </>

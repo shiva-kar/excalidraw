@@ -219,7 +219,7 @@ import {
   updateCodeBlockElementLayout,
   isHittingCodeBlockTitle,
   CODE_BLOCK_HEADER_LABEL,
-  CODE_BLOCK_THEME,
+  getCodeBlockTheme,
 } from "@excalidraw/element";
 
 import type { GlobalPoint, LocalPoint } from "@excalidraw/math";
@@ -8955,6 +8955,10 @@ class App extends React.Component<AppProps, AppState> {
       y: gridY,
     });
 
+    const codeBlockTheme = getCodeBlockTheme(
+      this.state.currentItemCodeBlockTheme,
+    );
+
     const baseElementAttributes = {
       x: gridX,
       y: gridY,
@@ -8962,13 +8966,13 @@ class App extends React.Component<AppProps, AppState> {
         elementType === "stickynote"
           ? this.state.currentItemStickynoteStrokeColor
           : elementType === "codeblock"
-          ? CODE_BLOCK_THEME.border
+          ? codeBlockTheme.border
           : this.state.currentItemStrokeColor,
       backgroundColor:
         elementType === "stickynote"
           ? this.state.currentItemStickynoteBackgroundColor
           : elementType === "codeblock"
-          ? CODE_BLOCK_THEME.background
+          ? codeBlockTheme.background
           : this.state.currentItemBackgroundColor,
       fillStyle: this.state.currentItemFillStyle,
       strokeWidth: this.getCurrentItemStrokeWidth(elementType),
@@ -8997,6 +9001,7 @@ class App extends React.Component<AppProps, AppState> {
         ...baseElementAttributes,
         fontSize: this.state.currentItemFontSize,
         language: this.state.currentItemCodeBlockLanguage,
+        theme: this.state.currentItemCodeBlockTheme,
         showLineNumbers: this.state.currentItemCodeBlockLineNumbers,
       });
     } else {

@@ -2,10 +2,10 @@ import { KEYS, CLASSES, sceneCoordsToViewportCoords } from "@excalidraw/common";
 import {
   getCodeBlockLayout,
   getCornerRadius,
-  CODE_BLOCK_THEME,
   CODE_BLOCK_FONT_FAMILY,
   tokenizeCodeBlock,
   getCodeBlockCaretIndexAtCoords,
+  getCodeBlockTheme,
 } from "@excalidraw/element";
 
 import type {
@@ -226,6 +226,7 @@ export const codeBlockWysiwyg = ({
       app.scene.getElement<NonDeleted<ExcalidrawCodeBlockElement>>(
         element.id,
       ) ?? element;
+    const theme = getCodeBlockTheme(latestElement.theme);
     const text = editable.value;
     const rawLines = text.split(/\r?\n/);
     const tokenizedLines = tokenizeCodeBlock(rawLines, latestElement.language);
@@ -244,8 +245,7 @@ export const codeBlockWysiwyg = ({
           const tokenSpan = ownerDocument.createElement("span");
           tokenSpan.textContent = token.text;
           tokenSpan.style.color =
-            CODE_BLOCK_THEME.tokenColors[token.type] ||
-            CODE_BLOCK_THEME.tokenColors.plain;
+            theme.tokenColors[token.type] || theme.tokenColors.plain;
           if (token.type === "comment" || token.type === "instance") {
             tokenSpan.style.fontStyle = "italic";
           }
@@ -279,6 +279,7 @@ export const codeBlockWysiwyg = ({
     if (!latestElement) {
       return;
     }
+    const theme = getCodeBlockTheme(latestElement.theme);
 
     const layout = getCodeBlockLayout(latestElement);
 
@@ -304,7 +305,7 @@ export const codeBlockWysiwyg = ({
       right: "0",
       top: `${lineTop}px`,
       height: `${highlightHeight}px`,
-      backgroundColor: CODE_BLOCK_THEME.activeLine,
+      backgroundColor: theme.activeLine,
       pointerEvents: "none",
       zIndex: "1",
       display:
@@ -324,6 +325,7 @@ export const codeBlockWysiwyg = ({
     if (!latestElement) {
       return;
     }
+    const theme = getCodeBlockTheme(latestElement.theme);
 
     const zoom = app.state.zoom.value;
     const { x: viewportCenterX, y: viewportCenterY } =
@@ -354,7 +356,7 @@ export const codeBlockWysiwyg = ({
     const borderColor =
       latestElement.strokeColor && latestElement.strokeColor !== "transparent"
         ? latestElement.strokeColor
-        : CODE_BLOCK_THEME.border;
+        : theme.border;
     const strokeStyle =
       latestElement.strokeStyle === "dashed"
         ? "dashed"
@@ -371,7 +373,11 @@ export const codeBlockWysiwyg = ({
       height: `${latestElement.height}px`,
       transform: `translate(-50%, -50%) scale(${zoom}) rotate(${latestElement.angle}rad)`,
       transformOrigin: "center center",
-      backgroundColor: CODE_BLOCK_THEME.background,
+      backgroundColor:
+        latestElement.backgroundColor &&
+        latestElement.backgroundColor !== "transparent"
+          ? latestElement.backgroundColor
+          : theme.background,
       borderRadius: `${radius}px`,
       border: "none",
       outline: `${borderWidth}px ${strokeStyle} ${borderColor}`,
@@ -400,7 +406,7 @@ export const codeBlockWysiwyg = ({
         width: `${gutterWidth}px`,
         minWidth: `${gutterWidth}px`,
         height: "100%",
-        backgroundColor: CODE_BLOCK_THEME.gutterBackground,
+        backgroundColor: theme.gutterBackground,
         borderTopLeftRadius: `${radius}px`,
         borderBottomLeftRadius: `${radius}px`,
         paddingTop: `${layout.padding}px`,
@@ -411,7 +417,7 @@ export const codeBlockWysiwyg = ({
         paddingBottom: `${layout.padding}px`,
         boxSizing: "border-box",
         textAlign: "right",
-        color: CODE_BLOCK_THEME.gutterText,
+        color: theme.gutterText,
         fontFamily: CODE_BLOCK_FONT_FAMILY,
         fontSize: `${latestElement.fontSize}px`,
         lineHeight: `${layout.lineHeightPx}px`,
@@ -467,7 +473,7 @@ export const codeBlockWysiwyg = ({
       ...commonEditorStyles,
       backgroundColor: "transparent",
       color: "transparent",
-      caretColor: CODE_BLOCK_THEME.tokenColors.plain,
+      caretColor: theme.tokenColors.plain,
       border: "none",
       outline: "none",
       resize: "none",

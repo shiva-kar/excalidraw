@@ -22,6 +22,7 @@ export {
   actionChangeVerticalAlign,
   actionChangeArrowProperties,
   actionChangeCodeBlockLanguage,
+  actionChangeCodeBlockTheme,
   actionChangeCodeBlockLineNumbers,
 } from "./actionProperties";
 

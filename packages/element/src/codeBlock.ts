@@ -3,11 +3,13 @@ import { pointFrom, pointRotateRads, type Radians } from "@excalidraw/math";
 import type { Scene } from "./Scene";
 import type {
   CodeBlockLanguage,
+  CodeBlockThemeName,
   ExcalidrawCodeBlockElement,
   NonDeleted,
 } from "./types";
 
 export const DEFAULT_CODE_BLOCK_LANGUAGE: CodeBlockLanguage = "javascript";
+export const DEFAULT_CODE_BLOCK_THEME: CodeBlockThemeName = "catppuccin";
 export const DEFAULT_CODE_BLOCK_FONT_SIZE = 14;
 export const CODE_BLOCK_FONT_SIZES = {
   sm: 10,
@@ -104,33 +106,7 @@ export const CODE_BLOCK_LANGUAGE_LABELS: Record<CodeBlockLanguage, string> = {
   yaml: "YAML",
 };
 
-export const CODE_BLOCK_THEME = {
-  background: "#1e1e2e",
-  gutterBackground: "#181825",
-  border: "#45475a",
-  activeLine: "rgba(205, 214, 244, 0.08)",
-  activeLineFallback: "#313244",
-  gutterText: "#7f849c",
-  gutterBorder: "#313244",
-  placeholder: "rgba(205, 214, 244, 0.4)",
-  tokenColors: {
-    keyword: "#cba6f7",
-    function: "#89b4fa",
-    type: "#89dceb",
-    string: "#a6e3a1",
-    number: "#fab387",
-    literal: "#fab387",
-    comment: "#9399b2",
-    instance: "#f5c2e7",
-    operator: "#f38ba8",
-    punctuation: "#cdd6f4",
-    property: "#cdd6f4",
-    tag: "#f38ba8",
-    plain: "#cdd6f4",
-  },
-} as const;
-
-type TokenType =
+export type TokenType =
   | "keyword"
   | "function"
   | "type"
@@ -144,6 +120,221 @@ type TokenType =
   | "property"
   | "tag"
   | "plain";
+
+export type CodeBlockTheme = {
+  background: string;
+  gutterBackground: string;
+  border: string;
+  activeLine: string;
+  activeLineFallback: string;
+  gutterText: string;
+  gutterBorder: string;
+  placeholder: string;
+  tokenColors: Record<TokenType, string>;
+};
+
+export const CODE_BLOCK_THEMES: Record<CodeBlockThemeName, CodeBlockTheme> = {
+  catppuccin: {
+    background: "#1e1e2e",
+    gutterBackground: "#181825",
+    border: "#45475a",
+    activeLine: "rgba(205, 214, 244, 0.08)",
+    activeLineFallback: "#313244",
+    gutterText: "#7f849c",
+    gutterBorder: "#313244",
+    placeholder: "rgba(205, 214, 244, 0.4)",
+    tokenColors: {
+      keyword: "#cba6f7",
+      function: "#89b4fa",
+      type: "#89dceb",
+      string: "#a6e3a1",
+      number: "#fab387",
+      literal: "#fab387",
+      comment: "#9399b2",
+      instance: "#f5c2e7",
+      operator: "#f38ba8",
+      punctuation: "#cdd6f4",
+      property: "#cdd6f4",
+      tag: "#f38ba8",
+      plain: "#cdd6f4",
+    },
+  },
+  githubDark: {
+    background: "#0d1117",
+    gutterBackground: "#010409",
+    border: "#30363d",
+    activeLine: "rgba(110, 118, 129, 0.12)",
+    activeLineFallback: "#161b22",
+    gutterText: "#6e7681",
+    gutterBorder: "#21262d",
+    placeholder: "rgba(140, 149, 159, 0.4)",
+    tokenColors: {
+      keyword: "#ff7b72",
+      function: "#d2a8ff",
+      type: "#ffa657",
+      string: "#a5d6ff",
+      number: "#79c0ff",
+      literal: "#79c0ff",
+      comment: "#8b949e",
+      instance: "#ff7b72",
+      operator: "#ff7b72",
+      punctuation: "#c9d1d9",
+      property: "#79c0ff",
+      tag: "#7ee787",
+      plain: "#c9d1d9",
+    },
+  },
+  githubLight: {
+    background: "#ffffff",
+    gutterBackground: "#f6f8fa",
+    border: "#d0d7de",
+    activeLine: "rgba(0, 0, 0, 0.04)",
+    activeLineFallback: "#eaeef2",
+    gutterText: "#8c959f",
+    gutterBorder: "#d8dee4",
+    placeholder: "rgba(87, 96, 106, 0.4)",
+    tokenColors: {
+      keyword: "#cf222e",
+      function: "#8250df",
+      type: "#953800",
+      string: "#0a3069",
+      number: "#0550ae",
+      literal: "#0550ae",
+      comment: "#6e7781",
+      instance: "#953800",
+      operator: "#cf222e",
+      punctuation: "#24292f",
+      property: "#0550ae",
+      tag: "#116329",
+      plain: "#24292f",
+    },
+  },
+  dracula: {
+    background: "#282a36",
+    gutterBackground: "#21222c",
+    border: "#44475a",
+    activeLine: "rgba(255, 255, 255, 0.06)",
+    activeLineFallback: "#343746",
+    gutterText: "#6272a4",
+    gutterBorder: "#44475a",
+    placeholder: "rgba(248, 248, 242, 0.4)",
+    tokenColors: {
+      keyword: "#ff79c6",
+      function: "#50fa7b",
+      type: "#8be9fd",
+      string: "#f1fa8c",
+      number: "#bd93f9",
+      literal: "#bd93f9",
+      comment: "#6272a4",
+      instance: "#ffb86c",
+      operator: "#ff79c6",
+      punctuation: "#f8f8f2",
+      property: "#50fa7b",
+      tag: "#ff79c6",
+      plain: "#f8f8f2",
+    },
+  },
+  nord: {
+    background: "#2e3440",
+    gutterBackground: "#242933",
+    border: "#3b4252",
+    activeLine: "rgba(255, 255, 255, 0.05)",
+    activeLineFallback: "#3b4252",
+    gutterText: "#4c566a",
+    gutterBorder: "#3b4252",
+    placeholder: "rgba(216, 222, 233, 0.4)",
+    tokenColors: {
+      keyword: "#81a1c1",
+      function: "#88c0d0",
+      type: "#8fbcbb",
+      string: "#a3be8c",
+      number: "#b48ead",
+      literal: "#b48ead",
+      comment: "#616e88",
+      instance: "#d8dee9",
+      operator: "#81a1c1",
+      punctuation: "#eceff4",
+      property: "#d8dee9",
+      tag: "#bf616a",
+      plain: "#d8dee9",
+    },
+  },
+  solarizedLight: {
+    background: "#fdf6e3",
+    gutterBackground: "#eee8d5",
+    border: "#d33682",
+    activeLine: "rgba(0, 0, 0, 0.04)",
+    activeLineFallback: "#e4decb",
+    gutterText: "#93a1a1",
+    gutterBorder: "#d5cebe",
+    placeholder: "rgba(101, 123, 131, 0.4)",
+    tokenColors: {
+      keyword: "#859900",
+      function: "#268bd2",
+      type: "#b58900",
+      string: "#2aa198",
+      number: "#d33682",
+      literal: "#d33682",
+      comment: "#93a1a1",
+      instance: "#cb4b16",
+      operator: "#859900",
+      punctuation: "#657b83",
+      property: "#268bd2",
+      tag: "#b58900",
+      plain: "#586e75",
+    },
+  },
+  monokai: {
+    background: "#272822",
+    gutterBackground: "#1e1f1c",
+    border: "#3e3d32",
+    activeLine: "rgba(255, 255, 255, 0.06)",
+    activeLineFallback: "#3e3d32",
+    gutterText: "#75715e",
+    gutterBorder: "#3e3d32",
+    placeholder: "rgba(248, 248, 242, 0.4)",
+    tokenColors: {
+      keyword: "#f92672",
+      function: "#a6e22e",
+      type: "#66d9ef",
+      string: "#e6db74",
+      number: "#ae81ff",
+      literal: "#ae81ff",
+      comment: "#75715e",
+      instance: "#fd971f",
+      operator: "#f92672",
+      punctuation: "#f8f8f2",
+      property: "#a6e22e",
+      tag: "#f92672",
+      plain: "#f8f8f2",
+    },
+  },
+};
+
+export const CODE_BLOCK_THEME = CODE_BLOCK_THEMES.catppuccin;
+
+export const CODE_BLOCK_THEME_LABELS: Record<CodeBlockThemeName, string> = {
+  catppuccin: "Catppuccin",
+  githubDark: "GitHub Dark",
+  githubLight: "GitHub Light",
+  dracula: "Dracula",
+  nord: "Nord",
+  solarizedLight: "Solarized Light",
+  monokai: "Monokai",
+};
+
+export const CODE_BLOCK_THEME_NAMES = Object.keys(
+  CODE_BLOCK_THEMES,
+) as CodeBlockThemeName[];
+
+export const getCodeBlockTheme = (
+  themeName?: CodeBlockThemeName | null,
+): CodeBlockTheme => {
+  if (themeName && CODE_BLOCK_THEMES[themeName]) {
+    return CODE_BLOCK_THEMES[themeName];
+  }
+  return CODE_BLOCK_THEMES.catppuccin;
+};
 
 export type CodeToken = {
   type: TokenType;

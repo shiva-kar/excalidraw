@@ -49,8 +49,8 @@ import {
   getCodeBlockLayout,
   CODE_BLOCK_HEADER_LABEL,
   CODE_BLOCK_PLACEHOLDER,
-  CODE_BLOCK_THEME,
   CODE_BLOCK_FONT_FAMILY,
+  getCodeBlockTheme,
 } from "@excalidraw/element";
 
 import type {
@@ -782,6 +782,7 @@ const renderElementToSvg = (
     }
     case "codeblock": {
       const codeBlockElement = element as ExcalidrawCodeBlockElement;
+      const theme = getCodeBlockTheme(codeBlockElement.theme);
       const group = svgRoot.ownerDocument.createElementNS(SVG_NS, "g");
       group.setAttribute(
         "transform",
@@ -825,7 +826,13 @@ const renderElementToSvg = (
         bgRect.setAttribute("rx", `${radius}`);
         bgRect.setAttribute("ry", `${radius}`);
       }
-      bgRect.setAttribute("fill", CODE_BLOCK_THEME.background);
+      bgRect.setAttribute(
+        "fill",
+        codeBlockElement.backgroundColor &&
+          codeBlockElement.backgroundColor !== "transparent"
+          ? codeBlockElement.backgroundColor
+          : theme.background,
+      );
       bgRect.setAttribute("stroke", "none");
       group.appendChild(bgRect);
 
@@ -864,7 +871,7 @@ const renderElementToSvg = (
         gutterRect.setAttribute("y", "0");
         gutterRect.setAttribute("width", `${layout.gutterWidth}`);
         gutterRect.setAttribute("height", `${codeBlockElement.height}`);
-        gutterRect.setAttribute("fill", CODE_BLOCK_THEME.gutterBackground);
+        gutterRect.setAttribute("fill", theme.gutterBackground);
         contentGroup.appendChild(gutterRect);
 
         const gutterTextPadding = Math.max(
@@ -892,7 +899,7 @@ const renderElementToSvg = (
             numText.setAttribute("dominant-baseline", "central");
             numText.setAttribute("font-family", CODE_BLOCK_FONT_FAMILY);
             numText.setAttribute("font-size", `${codeBlockElement.fontSize}px`);
-            numText.setAttribute("fill", CODE_BLOCK_THEME.gutterText);
+            numText.setAttribute("fill", theme.gutterText);
             numText.textContent = String(vLine.logicalLineNumber);
             contentGroup.appendChild(numText);
           }
@@ -916,7 +923,7 @@ const renderElementToSvg = (
         placeholder.setAttribute("dominant-baseline", "central");
         placeholder.setAttribute("font-family", CODE_BLOCK_FONT_FAMILY);
         placeholder.setAttribute("font-size", `${codeBlockElement.fontSize}px`);
-        placeholder.setAttribute("fill", CODE_BLOCK_THEME.placeholder);
+        placeholder.setAttribute("fill", theme.placeholder);
         placeholder.textContent = CODE_BLOCK_PLACEHOLDER;
         contentGroup.appendChild(placeholder);
       } else {
@@ -941,8 +948,7 @@ const renderElementToSvg = (
             );
             tspan.setAttribute(
               "fill",
-              CODE_BLOCK_THEME.tokenColors[token.type] ||
-                CODE_BLOCK_THEME.tokenColors.plain,
+              theme.tokenColors[token.type] || theme.tokenColors.plain,
             );
             if (token.type === "comment" || token.type === "instance") {
               tspan.setAttribute("font-style", "italic");
@@ -971,7 +977,7 @@ const renderElementToSvg = (
         codeBlockElement.strokeColor &&
           codeBlockElement.strokeColor !== "transparent"
           ? codeBlockElement.strokeColor
-          : CODE_BLOCK_THEME.border,
+          : theme.border,
       );
       borderRect.setAttribute(
         "stroke-width",

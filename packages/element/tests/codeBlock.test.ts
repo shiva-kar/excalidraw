@@ -9,6 +9,9 @@ import {
   getCodeBlockLayout,
   isHittingCodeBlockTitle,
   CODE_BLOCK_THEME,
+  CODE_BLOCK_THEMES,
+  getCodeBlockTheme,
+  CODE_BLOCK_THEME_NAMES,
   DEFAULT_CODE_BLOCK_LANGUAGE,
   DEFAULT_CODE_BLOCK_FONT_SIZE,
   DEFAULT_CODE_BLOCK_WIDTH,
@@ -341,6 +344,67 @@ describe("codeBlock element", () => {
 
       expect(element.backgroundColor).toBe(CODE_BLOCK_THEME.background);
       expect(element.strokeColor).toBe(CODE_BLOCK_THEME.border);
+    });
+
+    it("creates codeblock with default catppuccin theme", () => {
+      const element = newCodeBlockElement({ x: 0, y: 0 });
+      expect(element.theme).toBe("catppuccin");
+      expect(element.backgroundColor).toBe(
+        CODE_BLOCK_THEMES.catppuccin.background,
+      );
+      expect(element.strokeColor).toBe(CODE_BLOCK_THEMES.catppuccin.border);
+    });
+
+    it("creates codeblock with a light theme (githubLight)", () => {
+      const element = newCodeBlockElement({
+        x: 0,
+        y: 0,
+        theme: "githubLight",
+      });
+      expect(element.theme).toBe("githubLight");
+      expect(element.backgroundColor).toBe(
+        CODE_BLOCK_THEMES.githubLight.background,
+      );
+      expect(element.strokeColor).toBe(CODE_BLOCK_THEMES.githubLight.border);
+    });
+
+    it("ensures theme background and border override stale baseElementAttributes", () => {
+      const element = newCodeBlockElement({
+        x: 0,
+        y: 0,
+        backgroundColor: CODE_BLOCK_THEMES.catppuccin.background,
+        strokeColor: CODE_BLOCK_THEMES.catppuccin.border,
+        theme: "githubLight",
+      });
+      expect(element.theme).toBe("githubLight");
+      expect(element.backgroundColor).toBe(
+        CODE_BLOCK_THEMES.githubLight.background,
+      );
+      expect(element.strokeColor).toBe(CODE_BLOCK_THEMES.githubLight.border);
+    });
+
+    it("supports all registered theme names", () => {
+      for (const themeName of CODE_BLOCK_THEME_NAMES) {
+        const theme = getCodeBlockTheme(themeName);
+        expect(theme).toBeDefined();
+        expect(theme.background).toBeTruthy();
+        expect(theme.border).toBeTruthy();
+        expect(theme.gutterBackground).toBeTruthy();
+        expect(theme.tokenColors.keyword).toBeTruthy();
+
+        const el = newCodeBlockElement({ x: 0, y: 0, theme: themeName });
+        expect(el.theme).toBe(themeName);
+        expect(el.backgroundColor).toBe(theme.background);
+        expect(el.strokeColor).toBe(theme.border);
+      }
+    });
+
+    it("falls back gracefully for unknown or undefined themes", () => {
+      expect(getCodeBlockTheme(undefined)).toBe(CODE_BLOCK_THEMES.catppuccin);
+      expect(getCodeBlockTheme(null)).toBe(CODE_BLOCK_THEMES.catppuccin);
+      expect(getCodeBlockTheme("nonexistent" as any)).toBe(
+        CODE_BLOCK_THEMES.catppuccin,
+      );
     });
   });
 

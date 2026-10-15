@@ -41,6 +41,7 @@ import type {
   StrokeVariability,
   ExcalidrawCodeBlockElement,
   CodeBlockLanguage,
+  CodeBlockThemeName,
 } from "@excalidraw/element/types";
 
 import type {
@@ -468,6 +469,7 @@ export interface AppState {
   currentItemFontFamily: FontFamilyValues;
   currentItemFontSize: number;
   currentItemCodeBlockLanguage: CodeBlockLanguage;
+  currentItemCodeBlockTheme: CodeBlockThemeName;
   currentItemCodeBlockLineNumbers: boolean;
   currentItemTextAlign: TextAlign;
   currentItemStartArrowhead: Arrowhead | null;

@@ -50,6 +50,7 @@ export const getDefaultAppState = (): Omit<
     cursorButton: "up",
     activeEmbeddable: null,
     currentItemCodeBlockLanguage: "javascript",
+    currentItemCodeBlockTheme: "catppuccin",
     currentItemCodeBlockLineNumbers: true,
     newElement: null,
     editingTextElement: null,
@@ -207,6 +208,7 @@ const APP_STATE_STORAGE_CONF = (<
   currentItemTextAlign: { browser: true, export: false, server: false },
   currentHoveredFontFamily: { browser: false, export: false, server: false },
   currentItemCodeBlockLanguage: { browser: true, export: false, server: false },
+  currentItemCodeBlockTheme: { browser: true, export: false, server: false },
   currentItemCodeBlockLineNumbers: {
     browser: true,
     export: false,

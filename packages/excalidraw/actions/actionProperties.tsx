@@ -66,6 +66,9 @@ import {
   CODE_BLOCK_LANGUAGES,
   CODE_BLOCK_LANGUAGE_LABELS,
   CODE_BLOCK_FONT_SIZES,
+  CODE_BLOCK_THEME_NAMES,
+  CODE_BLOCK_THEME_LABELS,
+  getCodeBlockTheme,
   ShapeCache,
 } from "@excalidraw/element";
 
@@ -95,6 +98,7 @@ import type {
   ExcalidrawLinearElement,
   ExcalidrawTextElement,
   CodeBlockLanguage,
+  CodeBlockThemeName,
   FontFamilyValues,
   StrokeVariability,
   NonDeleted,
@@ -1944,6 +1948,89 @@ export const actionChangeCodeBlockLanguage = register<CodeBlockLanguage>({
                   }}
                 >
                   {CODE_BLOCK_LANGUAGE_LABELS[lang]}
+                </DropdownMenu.Item>
+              ))}
+            </div>
+          </DropdownMenu.Content>
+        </DropdownMenu>
+      </fieldset>
+    );
+  },
+});
+
+export const actionChangeCodeBlockTheme = register<CodeBlockThemeName>({
+  name: "changeCodeBlockTheme",
+  label: "labels.codeBlockTheme",
+  trackEvent: false,
+  perform: (elements, appState, value) => {
+    const theme = getCodeBlockTheme(value);
+    return {
+      elements: changeProperty(elements, appState, (el) => {
+        if (!isCodeBlockElement(el)) {
+          return el;
+        }
+        const newEl = newElementWith(el, {
+          theme: value,
+          backgroundColor: theme.background,
+          strokeColor: theme.border,
+        });
+        ShapeCache.delete(newEl);
+        return newEl;
+      }),
+      appState: { ...appState, currentItemCodeBlockTheme: value },
+      captureUpdate: CaptureUpdateAction.IMMEDIATELY,
+    };
+  },
+  PanelComponent: ({ elements, appState, updateData, app }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const selectedTheme =
+      getFormValue(
+        elements,
+        app,
+        (element) => (isCodeBlockElement(element) ? element.theme : null),
+        (element) => isCodeBlockElement(element),
+        (hasSelection) =>
+          hasSelection ? null : appState.currentItemCodeBlockTheme,
+      ) ?? appState.currentItemCodeBlockTheme;
+
+    return (
+      <fieldset className="code-block-language-fieldset">
+        <legend>{t("labels.codeBlockTheme")}</legend>
+        <DropdownMenu open={isOpen}>
+          <DropdownMenu.Trigger
+            onToggle={() => setIsOpen((prev) => !prev)}
+            aria-label={t("labels.codeBlockTheme")}
+            className="code-block-language-dropdown__trigger"
+          >
+            <span>
+              {CODE_BLOCK_THEME_LABELS[selectedTheme] ?? selectedTheme}
+            </span>
+            <span
+              className={`code-block-language-dropdown__icon ${
+                isOpen ? "code-block-language-dropdown__icon--open" : ""
+              }`}
+            >
+              {chevronDownIcon}
+            </span>
+          </DropdownMenu.Trigger>
+          <DropdownMenu.Content
+            onClickOutside={() => setIsOpen(false)}
+            onSelect={() => setIsOpen(false)}
+            align="start"
+            className="code-block-language-dropdown__content"
+          >
+            <div className="code-block-language-dropdown__list">
+              {CODE_BLOCK_THEME_NAMES.map((themeName) => (
+                <DropdownMenu.Item
+                  key={themeName}
+                  selected={themeName === selectedTheme}
+                  onSelect={(event) => {
+                    event.preventDefault();
+                    updateData(themeName);
+                    setIsOpen(false);
+                  }}
+                >
+                  {CODE_BLOCK_THEME_LABELS[themeName]}
                 </DropdownMenu.Item>
               ))}
             </div>

@@ -77,6 +77,7 @@ export type ActionName =
   | "changeOpacity"
   | "changeFontSize"
   | "changeCodeBlockLanguage"
+  | "changeCodeBlockTheme"
   | "changeCodeBlockLineNumbers"
   | "undo"
   | "redo"

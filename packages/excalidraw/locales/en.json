@@ -108,6 +108,7 @@
     "language": "Language",
     "codeblock": "Code block",
     "codeBlockLanguage": "Language",
+    "codeBlockTheme": "Theme",
     "codeBlockLineNumbers": "Line numbers",
     "on": "On",
     "off": "Off",

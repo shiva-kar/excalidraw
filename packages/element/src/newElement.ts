@@ -36,13 +36,15 @@ import { wrapText } from "./textWrapping";
 import { isLineElement } from "./typeChecks";
 
 import {
-  CODE_BLOCK_THEME,
+  CODE_BLOCK_THEMES,
   DEFAULT_CODE_BLOCK_FONT_SIZE,
   DEFAULT_CODE_BLOCK_LANGUAGE,
+  DEFAULT_CODE_BLOCK_THEME,
   DEFAULT_CODE_BLOCK_WIDTH,
   DEFAULT_CODE_BLOCK_HEIGHT,
   MIN_CODE_BLOCK_WIDTH,
   CODE_BLOCK_HEADER_LABEL,
+  getCodeBlockTheme,
 } from "./codeBlock";
 
 import type {
@@ -69,6 +71,7 @@ import type {
   ExcalidrawStickyNoteElement,
   ExcalidrawCodeBlockElement,
   CodeBlockLanguage,
+  CodeBlockThemeName,
 } from "./types";
 
 export type ElementConstructorOpts = MarkOptional<
@@ -268,6 +271,7 @@ export const newCodeBlockElement = (
     type?: "codeblock";
     code?: string;
     language?: CodeBlockLanguage;
+    theme?: CodeBlockThemeName;
     fontSize?: number;
     showLineNumbers?: boolean;
     title?: string;
@@ -283,17 +287,32 @@ export const newCodeBlockElement = (
     DEFAULT_CODE_BLOCK_HEIGHT,
   );
 
+  const themeName = opts.theme ?? DEFAULT_CODE_BLOCK_THEME;
+  const theme = getCodeBlockTheme(themeName);
+
   const codeBlockElement = newElementWith(
     {
       ..._newElementBase<ExcalidrawCodeBlockElement>("codeblock", {
         ...opts,
         width,
         height,
-        backgroundColor: CODE_BLOCK_THEME.background,
+        backgroundColor:
+          opts.theme ||
+          !opts.backgroundColor ||
+          opts.backgroundColor === "transparent"
+            ? theme.background
+            : opts.backgroundColor,
         strokeColor:
-          opts.strokeColor && opts.strokeColor !== "transparent"
+          opts.theme &&
+          opts.strokeColor &&
+          Object.values(CODE_BLOCK_THEMES).some(
+            (t) => t.border === opts.strokeColor,
+          ) &&
+          opts.strokeColor !== theme.border
+            ? theme.border
+            : opts.strokeColor && opts.strokeColor !== "transparent"
             ? opts.strokeColor
-            : CODE_BLOCK_THEME.border,
+            : theme.border,
         roundness: opts.roundness ?? {
           type: ROUNDNESS.ADAPTIVE_RADIUS,
           value: 8,
@@ -302,6 +321,7 @@ export const newCodeBlockElement = (
       type: "codeblock",
       code: opts.code ?? "",
       language: opts.language ?? DEFAULT_CODE_BLOCK_LANGUAGE,
+      theme: themeName,
       fontSize: opts.fontSize ?? DEFAULT_CODE_BLOCK_FONT_SIZE,
       showLineNumbers: opts.showLineNumbers ?? true,
       title: opts.title ?? CODE_BLOCK_HEADER_LABEL,
